@@ -1,0 +1,1 @@
+deno test --allow-read src/$1/solve.test.ts
