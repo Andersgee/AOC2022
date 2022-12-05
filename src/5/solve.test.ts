@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { parse, type Puzzle, log } from "../puzzle.ts";
+import { parse, type Puzzle, log, copy } from "../puzzle.ts";
 
 const FILE_PATH = "./src/5/input.txt";
 const GOLD_A = "CMZ";
@@ -16,13 +16,28 @@ move 2 from 2 to 1
 move 1 from 1 to 2
 `;
 
+//just write this out by hand..
+type Stack = string[];
+
+const TEST_STACKS: Stack[] = [["Z", "N"], ["M", "C", "D"], ["P"]];
+
+const STACKS: Stack[] = [
+  ["Z", "J", "G"],
+  ["Q", "L", "R", "P", "W", "F", "V", "C"],
+  ["F", "P", "M", "C", "L", "G", "R"],
+  ["L", "F", "B", "W", "P", "H", "M"],
+  ["G", "C", "F", "S", "V", "Q"],
+  ["W", "H", "J", "Z", "M", "Q", "T", "L"],
+  ["H", "F", "S", "B", "V"],
+  ["F", "J", "Z", "S"],
+  ["M", "C", "D", "P", "F", "H", "B", "T"],
+];
+
 type Move = {
   from: number;
   to: number;
   count: number;
 };
-
-type Stack = string[];
 
 function execute(move: Move, stacks: Stack[]) {
   for (let i = 0; i < move.count; i++) {
@@ -70,43 +85,15 @@ function solve_b(puzzle: Puzzle, stacks: Stack[]) {
 }
 
 Deno.test("A", async () => {
-  const TEST_STACKS = [["Z", "N"], ["M", "C", "D"], ["P"]];
-
-  const STACKS = [
-    ["Z", "J", "G"],
-    ["Q", "L", "R", "P", "W", "F", "V", "C"],
-    ["F", "P", "M", "C", "L", "G", "R"],
-    ["L", "F", "B", "W", "P", "H", "M"],
-    ["G", "C", "F", "S", "V", "Q"],
-    ["W", "H", "J", "Z", "M", "Q", "T", "L"],
-    ["H", "F", "S", "B", "V"],
-    ["F", "J", "Z", "S"],
-    ["M", "C", "D", "P", "F", "H", "B", "T"],
-  ];
-
   const testpuzzle = await parse({ input: TEST_INPUT });
-  const res = solve_a(testpuzzle, TEST_STACKS);
-  log("A RESULT", solve_a(await parse({ filepath: FILE_PATH }), STACKS));
+  const res = solve_a(testpuzzle, copy(TEST_STACKS));
+  log("A RESULT:", solve_a(await parse({ filepath: FILE_PATH }), copy(STACKS)));
   assertEquals(res, GOLD_A);
 });
 
 Deno.test("B", async () => {
-  const TEST_STACKS = [["Z", "N"], ["M", "C", "D"], ["P"]];
-
-  const STACKS = [
-    ["Z", "J", "G"],
-    ["Q", "L", "R", "P", "W", "F", "V", "C"],
-    ["F", "P", "M", "C", "L", "G", "R"],
-    ["L", "F", "B", "W", "P", "H", "M"],
-    ["G", "C", "F", "S", "V", "Q"],
-    ["W", "H", "J", "Z", "M", "Q", "T", "L"],
-    ["H", "F", "S", "B", "V"],
-    ["F", "J", "Z", "S"],
-    ["M", "C", "D", "P", "F", "H", "B", "T"],
-  ];
-
   const testpuzzle = await parse({ input: TEST_INPUT });
-  const res = solve_b(testpuzzle, TEST_STACKS);
-  log("B RESULT", solve_b(await parse({ filepath: FILE_PATH }), STACKS));
+  const res = solve_b(testpuzzle, copy(TEST_STACKS));
+  log("B RESULT:", solve_b(await parse({ filepath: FILE_PATH }), copy(STACKS)));
   assertEquals(res, GOLD_B);
 });

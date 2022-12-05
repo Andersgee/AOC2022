@@ -49,3 +49,7 @@ export async function parse({ filepath = "./input.txt", input = "" }: Args) {
 }
 
 export const log = console.log;
+
+export function copy<T>(x: any) {
+  return JSON.parse(JSON.stringify(x)) as T;
+}
