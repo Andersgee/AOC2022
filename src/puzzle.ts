@@ -21,8 +21,7 @@ export async function parse({ filepath = "./input.txt", input = "" }: Args) {
     try {
       puzzle.input = await Deno.readTextFile(filepath);
     } catch (error) {
-      console.log(error);
-      return puzzle;
+      throw "Bad filepath?";
     }
   }
 

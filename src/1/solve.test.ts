@@ -50,12 +50,12 @@ Deno.test("A", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_a(testpuzzle);
   log("A RESULT", solve_a(await parse({ filepath: FILE_PATH })));
-  assertEquals(GOLD_A, res);
+  assertEquals(res, GOLD_A);
 });
 
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_b(testpuzzle);
   log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
-  assertEquals(GOLD_B, res);
+  assertEquals(res, GOLD_B);
 });
