@@ -18,7 +18,11 @@ const GOLD_A4 = 10;
 const TEST_INPUT5 = "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw";
 const GOLD_A5 = 11;
 
-const GOLD_B = 1;
+const GOLD_B1 = 19;
+const GOLD_B2 = 23;
+const GOLD_B3 = 23;
+const GOLD_B4 = 29;
+const GOLD_B5 = 26;
 
 function solve_a(puzzle: Puzzle) {
   const chars = puzzle.input.split("");
@@ -39,15 +43,23 @@ function solve_a(puzzle: Puzzle) {
 }
 
 function solve_b(puzzle: Puzzle) {
-  const res = 0;
-  return res;
+  const N = 14;
+  const chars = puzzle.input.split("");
+  for (let i = 0; i < chars.length - (N - 1); i++) {
+    const s = chars.slice(i, i + N);
+    const sequence = new Set([...s]);
+    //log({ i, sequence });
+
+    if (sequence.size === N) {
+      return i + N;
+    }
+  }
 }
 
 Deno.test("A1", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT1 });
   assertEquals(solve_a(testpuzzle), GOLD_A1);
 });
-
 Deno.test("A2", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT2 });
   assertEquals(solve_a(testpuzzle), GOLD_A2);
@@ -66,11 +78,24 @@ Deno.test("A5", async () => {
   assertEquals(solve_a(testpuzzle), GOLD_A5);
 });
 
-/*
-Deno.test("B", async () => {
-  const testpuzzle = await parse({ input: TEST_INPUT });
-  const res = solve_b(testpuzzle);
-  log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
-  assertEquals(res, GOLD_B);
+Deno.test("B1", async () => {
+  const testpuzzle = await parse({ input: TEST_INPUT1 });
+  assertEquals(solve_b(testpuzzle), GOLD_B1);
 });
-*/
+Deno.test("B2", async () => {
+  const testpuzzle = await parse({ input: TEST_INPUT2 });
+  assertEquals(solve_b(testpuzzle), GOLD_B2);
+});
+Deno.test("B3", async () => {
+  const testpuzzle = await parse({ input: TEST_INPUT3 });
+  assertEquals(solve_b(testpuzzle), GOLD_B3);
+});
+Deno.test("B4", async () => {
+  const testpuzzle = await parse({ input: TEST_INPUT4 });
+  assertEquals(solve_b(testpuzzle), GOLD_B4);
+});
+Deno.test("B5", async () => {
+  const testpuzzle = await parse({ input: TEST_INPUT5 });
+  log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
+  assertEquals(solve_b(testpuzzle), GOLD_B5);
+});
