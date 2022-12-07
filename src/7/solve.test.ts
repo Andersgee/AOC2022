@@ -3,7 +3,7 @@ import { parse, type Puzzle, log } from "../puzzle.ts";
 
 const FILE_PATH = "./src/7/input.txt";
 const GOLD_A = 95437;
-const GOLD_B = 1;
+const GOLD_B = 24933642;
 const TEST_INPUT = `$ cd /
 $ ls
 dir a
@@ -90,8 +90,76 @@ function solve_a(puzzle: Puzzle) {
 }
 
 function solve_b(puzzle: Puzzle) {
-  const res = 0;
-  return res;
+  const folderSizes: Record<string, number> = {};
+
+  const blocks = puzzle.input
+    .split("$")
+    .map((s) => s.trim())
+    .slice(1);
+
+  let pwd: string[] = [];
+  for (const block of blocks) {
+    const rows = block.split("\n");
+    const [cmd, arg] = rows[0].split(" ");
+    const outputlines = rows.slice(1);
+    //log({ cmd, arg, results });
+    if (cmd === "cd") {
+      if (arg === "/") {
+        pwd = [""];
+      } else if (arg === "..") {
+        pwd = pwd.slice(0, -1);
+      } else {
+        pwd.push(arg);
+      }
+    } else if (cmd === "ls") {
+      let sumSize = 0;
+      for (const line of outputlines) {
+        const [left, right] = line.split(" ");
+        if (left !== "dir") {
+          const size = parseFloat(left);
+          sumSize += size;
+        }
+      }
+
+      //add size to this folder and parent folders
+      for (let i = 0; i < pwd.length; i++) {
+        const folder = pwd.slice(0, i + 1);
+        const name = `${folder.join("/")}`;
+
+        if (folderSizes[name] !== undefined) {
+          folderSizes[name] += sumSize;
+        } else {
+          folderSizes[name] = sumSize;
+        }
+      }
+      //folderSizes[`/${pwd.join("/")}`] = sumSize;
+    }
+  }
+
+  const SYSTEM_SIZE = 70000000;
+  const REQUIRED_FREE = 30000000;
+  const current_free = SYSTEM_SIZE - folderSizes[""];
+
+  const required_deletion = REQUIRED_FREE - current_free;
+  //log({ folderSizes, current_free, required_deletion });
+
+  //pick the smallest folder that is larget than required_deletion
+
+  let potential_folders = [];
+  for (const [name, size] of Object.entries(folderSizes)) {
+    if (size >= required_deletion) {
+      potential_folders.push({ name, size });
+    }
+  }
+  let smallest_size = Infinity;
+  for (const potential of potential_folders) {
+    if (potential.size < smallest_size) {
+      smallest_size = potential.size;
+    }
+  }
+  //log({ potential_folders, smallest_size });
+
+  return smallest_size;
 }
 
 Deno.test("A", async () => {
@@ -101,11 +169,9 @@ Deno.test("A", async () => {
   assertEquals(res, GOLD_A);
 });
 
-/*
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_b(testpuzzle);
   log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
   assertEquals(res, GOLD_B);
 });
-*/
