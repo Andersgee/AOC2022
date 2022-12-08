@@ -87,8 +87,6 @@ function solve_a(puzzle: Puzzle) {
     .split("\n")
     .map((x) => x.split("").map(parseFloat));
 
-  //log({ M });
-  //log("M[0]", M[0]);
   let sum = 0;
 
   for (let y = 0; y < M.length; y++) {
@@ -108,9 +106,7 @@ function solve_b(puzzle: Puzzle) {
     .split("\n")
     .map((x) => x.split("").map(parseFloat));
 
-  //log({ M });
-  //log("M[0]", M[0]);
-  let scores = [];
+  const scores = [];
   for (let y = 0; y < M.length; y++) {
     for (let x = 0; x < M[0].length; x++) {
       const score = scenicScore(x, y, M);
@@ -121,14 +117,12 @@ function solve_b(puzzle: Puzzle) {
   return Math.max(...scores);
 }
 
-/*
 Deno.test("A", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_a(testpuzzle);
   log("A RESULT", solve_a(await parse({ filepath: FILE_PATH })));
   assertEquals(res, GOLD_A);
 });
-*/
 
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
