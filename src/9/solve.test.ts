@@ -112,7 +112,6 @@ function followCmd(a: Coord, b: Coord): Coord {
   //dx:2, dy:1
 
   throw `MISSING FOLLOW CONDITION dx:${dx}, dy:${dy}`;
-  return [0, 0];
 }
 
 function solve_a(puzzle: Puzzle) {
@@ -133,10 +132,10 @@ function solve_a(puzzle: Puzzle) {
       );
       currentHead = newHead;
       currentTail = newTail;
-      tailVisited.add(`${newTail[0]}-${newTail[1]}`);
+      tailVisited.add(`${newTail[0]},${newTail[1]}`);
     }
   }
-  log({ tailVisited });
+  //log({ tailVisited });
 
   return tailVisited.size;
 }
@@ -206,20 +205,16 @@ function solve_b(puzzle: Puzzle) {
   return tailVisited.size;
 }
 
-/*
 Deno.test("A", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_a(testpuzzle);
   assertEquals(res, GOLD_A);
   log("A RESULT", solve_a(await parse({ filepath: FILE_PATH })));
 });
-*/
 
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUTB });
   const res = solve_b(testpuzzle);
   assertEquals(res, GOLD_B);
   log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
-
-  //2581 too high.
 });
