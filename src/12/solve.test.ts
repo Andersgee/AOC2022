@@ -3,7 +3,7 @@ import { parse, type Puzzle, log } from "../puzzle.ts";
 
 const FILE_PATH = "./src/12/input.txt";
 const GOLD_A = 31;
-const GOLD_B = 1;
+const GOLD_B = 29;
 const TEST_INPUT = `Sabqponm
 abcryxxl
 accszExk
@@ -104,7 +104,7 @@ function parseMap(puzzle: Puzzle) {
     }
   }
 
-  return { G, Y, X, S, E };
+  return { G, Y, X, S, E, charMap };
 }
 
 type Prev = Map<string, string>;
@@ -162,10 +162,42 @@ function solve_a(puzzle: Puzzle) {
 }
 
 function solve_b(puzzle: Puzzle) {
-  const res = 0;
-  return res;
+  const { G, S, E, X, Y, charMap } = parseMap(puzzle);
+
+  //log({ G, S, E, prev });
+  const starts: string[] = [];
+  for (const [node, neighbors] of G) {
+    const [x, y] = node.split("-").map(parseFloat);
+    if (charMap[y][x] === "a") {
+      starts.push(node);
+    }
+  }
+
+  const lengths: Map<string, number> = new Map();
+  for (const start of starts) {
+    try {
+      const prev = solveGraph(G, start, E);
+      const path = reconstructPath(prev, start, E);
+      lengths.set(start, path.length - 1);
+    } catch (error) {
+      console.log(`catch on start:${start},  ${JSON.stringify(error)}`);
+    }
+  }
+  log({ lengths });
+
+  let shortestLen = Infinity;
+  let shortestStartNode = "";
+  for (const [node, l] of lengths) {
+    if (l < shortestLen) {
+      shortestLen = l;
+      shortestStartNode = node;
+    }
+  }
+
+  return shortestLen;
 }
 
+/*
 Deno.test("A", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_a(testpuzzle);
@@ -173,15 +205,14 @@ Deno.test("A", async () => {
   log("A RESULT", solve_a(await parse({ filepath: FILE_PATH })));
   assertEquals(res, GOLD_A);
 });
+*/
 
-/*
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_b(testpuzzle);
   log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
   assertEquals(res, GOLD_B);
 });
-*/
 
 function drawPath(path: string[], X: number, Y: number) {
   const s: string[][] = [];
