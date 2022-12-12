@@ -3,7 +3,7 @@ import { parse, type Puzzle, log } from "../puzzle.ts";
 
 const FILE_PATH = "./src/11/input.txt";
 const GOLD_A = 10605;
-const GOLD_B = 1;
+const GOLD_B = 2713310158;
 
 const TEST_INPUT = `Monkey 0:
   Starting items: 79, 98
@@ -35,10 +35,11 @@ Monkey 3:
 `;
 
 type Monkey = {
+  t: number;
   index: number;
   items: number[];
   inspections: number;
-  op: (old: number) => number;
+  increase_worry: (old: number) => number;
   throw_to: (k: number) => number;
 };
 
@@ -53,67 +54,72 @@ function parseMonkeys(puzzle: Puzzle) {
     //log({ items, opstr, t, t_true, t_false });
 
     return {
+      t,
       index,
       inspections: 0,
       items,
-      op: (old: number) => eval(opstr),
+      increase_worry: (old: number) => eval(opstr),
       throw_to: (k: number) => (k % t === 0 ? t_true : t_false),
     };
   });
   return monkeys;
 }
 
-function solve_a(puzzle: Puzzle) {
+function solve(puzzle: Puzzle, isPartA: boolean) {
   const monkeys = parseMonkeys(puzzle);
+  const SHARED_MOD = monkeys.map((monkey) => monkey.t).reduce((a, b) => a * b);
 
-  for (let round = 0; round < 20; round++) {
+  const ROUNDS = isPartA ? 20 : 10000;
+  for (let round = 1; round <= ROUNDS; round++) {
     for (const monkey of monkeys) {
       while (monkey.items.length > 0) {
         const item = monkey.items.shift();
         if (item) {
           monkey.inspections += 1;
-          let worry_level = monkey.op(item);
-          worry_level = Math.floor(worry_level / 3); //gets bored
+          let worry_level = monkey.increase_worry(item);
+          if (isPartA) {
+            worry_level = Math.floor(worry_level / 3);
+          }
           const throw_to = monkey.throw_to(worry_level);
-          log(
-            `monkey ${monkey.index} throws item (${worry_level}) to ${throw_to}`
-          );
-          //log({ worry_level, throw_to });
-          monkeys[throw_to].items.push(worry_level);
+          const recievingMonkey = monkeys[throw_to];
+          if (isPartA) {
+            recievingMonkey.items.push(worry_level);
+          } else {
+            recievingMonkey.items.push(worry_level % SHARED_MOD);
+          }
         }
       }
     }
+    /*
+    if (round % 1000 === 0 || [1, 20].some((x) => x === round)) {
+      const inspections = monkeys.map((monkey) => monkey.inspections);
+      log({ round, inspections });
+    }
+    */
   }
-
+  /*
   log({ monkeys });
-
-  const inspections = monkeys
+  const inspections = monkeys.map((monkey) => monkey.inspections);
+  log({ inspections });
+*/
+  const sortedInspections = monkeys
     .map((monkey) => monkey.inspections)
     .sort((a, b) => b - a);
-  log({ inspections });
 
-  const res = inspections[0] * inspections[1];
-  return res;
-}
-
-function solve_b(puzzle: Puzzle) {
-  const res = 0;
+  const res = sortedInspections[0] * sortedInspections[1];
   return res;
 }
 
 Deno.test("A", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
-  const res = solve_a(testpuzzle);
+  const res = solve(testpuzzle, true);
   assertEquals(res, GOLD_A);
-  log("A RESULT", solve_a(await parse({ filepath: FILE_PATH })));
-
-  //3760 too low
+  log("A RESULT", solve(await parse({ filepath: FILE_PATH }), true));
 });
-/*
+
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
-  const res = solve_b(testpuzzle);
-  log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
+  const res = solve(testpuzzle, false);
   assertEquals(res, GOLD_B);
+  log("B RESULT", solve(await parse({ filepath: FILE_PATH }), false));
 });
-*/
