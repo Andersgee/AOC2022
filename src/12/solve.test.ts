@@ -155,8 +155,8 @@ function solve_a(puzzle: Puzzle) {
   //log({ G, S, E, prev });
 
   const path = reconstructPath(prev, S, E);
-  log({ path });
-  drawPath(path, X, Y);
+  //log({ path });
+  //drawPath(path, X, Y);
   const nSteps = path.length - 1;
   return nSteps;
 }
@@ -180,24 +180,21 @@ function solve_b(puzzle: Puzzle) {
       const path = reconstructPath(prev, start, E);
       lengths.set(start, path.length - 1);
     } catch (error) {
-      console.log(`catch on start:${start},  ${JSON.stringify(error)}`);
+      //console.log(`catch on start:${start},  ${JSON.stringify(error)}`);
     }
   }
-  log({ lengths });
+  //log({ lengths });
 
   let shortestLen = Infinity;
-  let shortestStartNode = "";
   for (const [node, l] of lengths) {
     if (l < shortestLen) {
       shortestLen = l;
-      shortestStartNode = node;
     }
   }
 
   return shortestLen;
 }
 
-/*
 Deno.test("A", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_a(testpuzzle);
@@ -205,7 +202,6 @@ Deno.test("A", async () => {
   log("A RESULT", solve_a(await parse({ filepath: FILE_PATH })));
   assertEquals(res, GOLD_A);
 });
-*/
 
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
