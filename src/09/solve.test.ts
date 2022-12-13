@@ -1,7 +1,7 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { parse, type Puzzle, log, copy } from "../puzzle.ts";
 
-const FILE_PATH = "./src/9/input.txt";
+const FILE_PATH = "./src/09/input.txt";
 const GOLD_A = 13;
 const TEST_INPUT = `R 4
 U 4
