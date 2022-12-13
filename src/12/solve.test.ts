@@ -156,7 +156,7 @@ function solve_a(puzzle: Puzzle) {
 
   const path = reconstructPath(prev, S, E);
   //log({ path });
-  //drawPath(path, X, Y);
+  drawPath(path, X, Y);
   const nSteps = path.length - 1;
   return nSteps;
 }
