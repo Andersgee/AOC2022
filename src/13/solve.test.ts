@@ -3,7 +3,7 @@ import { parse, type Puzzle, log } from "../puzzle.ts";
 
 const FILE_PATH = "./src/13/input.txt";
 const GOLD_A = 13;
-const GOLD_B = 1;
+const GOLD_B = 140;
 const TEST_INPUT = `[1,1,3,1,1]
 [1,1,5,1,1]
 
@@ -131,6 +131,31 @@ function solve_a(puzzle: Puzzle) {
   const res = correctPairsIndexes.reduce((a, b) => a + b);
   return res;
 }
+
+function solve_b(puzzle: Puzzle) {
+  const packets: Packet[] = [];
+  const pairs = puzzle.input.split("\n\n").forEach((p) => {
+    const [a, b] = p.split("\n");
+    packets.push(JSON.parse(a));
+    packets.push(JSON.parse(b));
+  });
+  //extra divider packets
+  const dividerPacket1 = [[2]];
+  const dividerPacket2 = [[6]];
+  packets.push(dividerPacket1);
+  packets.push(dividerPacket2);
+
+  log({ packets });
+
+  const sortedPackets = packets.sort((a, b) => (isRightOrder(a, b) ? -1 : 1));
+
+  const a = sortedPackets.findIndex((x) => x === dividerPacket1);
+  const b = sortedPackets.findIndex((x) => x === dividerPacket2);
+  log({ a, b });
+
+  const res = (a + 1) * (b + 1);
+  return res;
+}
 /*
 Deno.test("Pair 1", () => {
   const left = [1, 1, 3, 1, 1];
@@ -189,18 +214,18 @@ Deno.test("Pair 8", () => {
 });
 */
 
+/*
 Deno.test("A", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_a(testpuzzle);
   assertEquals(res, GOLD_A);
   log("A RESULT", solve_a(await parse({ filepath: FILE_PATH })));
 });
+*/
 
-/*
 Deno.test("B", async () => {
   const testpuzzle = await parse({ input: TEST_INPUT });
   const res = solve_b(testpuzzle);
-  log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
   assertEquals(res, GOLD_B);
+  log("B RESULT", solve_b(await parse({ filepath: FILE_PATH })));
 });
-*/
