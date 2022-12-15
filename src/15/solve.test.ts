@@ -110,31 +110,11 @@ function solve_b(puzzle: Puzzle, maxX: number, maxY: number) {
 			return freqcalc(x, y);
 		}
 
-		//if multiple start at same "from": only keep the one with largest "to"
-		//log({ sortedSegments, consumedInds, limits });
-
-		/*
-		for (let x = 0; x <= maxX; x++) {
-			if (!covered[x]) {
-				log(`found uncovered at x-y: ${x}-${y}`);
-				return x * 4000000 + y;
-			}
-		}
-		*/
-
-		log(y);
+		//log(y);
 	}
 
 	return 0;
 }
-/*
-Deno.test("A", async () => {
-	const testpuzzle = await parse({ input: TEST_INPUT });
-	const res = solve_a(testpuzzle, 10);
-	assertEquals(res, GOLD_A);
-	log("A RESULT", solve_a(await parse({ filepath: FILE_PATH }), 2000000));
-});
- */
 
 Deno.test("B", async () => {
 	const testpuzzle = await parse({ input: TEST_INPUT });
